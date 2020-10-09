@@ -1,0 +1,17 @@
+{
+  "name": "googleattachementdownload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "atob": "^2.1.2",
+    "googleapis": "^39.2.0",
+    "inquirer": "^7.3.3",
+    "lodash": "^4.17.20"
+  }
+}
