@@ -58,10 +58,3 @@ module.exports.getAuthAndGmail = function (callback) {
         });
       });
     }
-
-// const express = require('express');
-// const authConroller = require('../controllers/authController');
-// const router = express.Router();
-
-// router.get('/authUser',authConroller.getAuth);
-// module.exports = router;
