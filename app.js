@@ -5,7 +5,6 @@ const inquirer = require('inquirer');
 const path = require('path');
 
 const AuthTheUser = require('./funct/auth');
-const { file } = require('googleapis/build/src/apis/file');
 let gmail;
 
 //client authentication(1)
@@ -19,8 +18,9 @@ function main(auth, gmailInstance) {
   workflow = downloadFromThisEmailId;
   workflow(auth, gmail, coredata)
     .then((mailList) => {
+
       coredata.mailList = mailList;
-      return fetchMailsByMailIds(auth, mailList);
+         return fetchMailsByMailIds(auth, mailList);
     })
     .then((mails) => {
       coredata.attachments = pluckAllAttachments(mails);
@@ -36,7 +36,7 @@ function main(auth, gmailInstance) {
 const downloadFromThisEmailId = (auth) => {
      return askForMail()
         .then((mailId) => {
-          return getListOfMailIdByFromId(auth, mailId);
+            return getListOfMailIdByFromId(auth, mailId);
         });
 }
 
@@ -69,17 +69,33 @@ function getListOfMailIdByFromId(auth, mailId) {
   });
 }
 
-//fetch mail by email message ID (6)
+//fetch mail by email message ID (6)(1)
 async function fetchMailsByMailIds(auth, mailList) {
   let results = [];
    let promises = [];
   for(index in mailList) {
+    markAsRead(auth,mailList[index].id);
     promises.push(getMail(auth, mailList[index].id));
   };
   mails = await Promise.all(promises);
   _.merge(results, mails);
   return results;
 }
+//this function sent request ro gmail for marking mail as "READ"(6)(2)
+async function markAsRead (auth,messageId) {
+  try {
+      const response = await auth.request({
+          url: `https://www.googleapis.com/gmail/v1/users/me/messages/${messageId}/modify`,
+          method: 'post',
+          data: {
+              'removeLabelIds': [ 'UNREAD' ]
+          }
+      });
+      return response.data;
+  } catch(e) {
+      throw e;
+  }
+};
 
 //fetching messages from gmail api(7)
 function getMail(auth, mailId) {
@@ -111,10 +127,11 @@ function pluckAllAttachments(mails) {
         name: p.filename,
         id: p.body.attachmentId
       };
-      return attachment;
+      return attachment;  
     })
   })));
 }
+
 
 //fetching mail messages from emailID received from gmail.(9)
 async function fetchAndSaveAttachments(auth, attachments) {
