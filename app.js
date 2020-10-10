@@ -81,7 +81,7 @@ async function fetchMailsByMailIds(auth, mailList) {
   _.merge(results, mails);
   return results;
 }
-//this function sent request ro gmail for marking mail as "READ"(6)(2)
+//this function sent request to gmail for marking mail as "READ"(6)(2)
 async function markAsRead (auth,messageId) {
   try {
       const response = await auth.request({
